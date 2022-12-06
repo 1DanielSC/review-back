@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.netflix.discovery.DiscoveryClient;
 import com.salesback.model.Review;
 import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
@@ -22,11 +21,6 @@ public class ReviewService {
     
     @Autowired
     private ReviewRepository reviewRepository;
-
-    @Autowired
-    private DiscoveryClient eurekaConsumer;
-
-
 
     public Review save(Review review){
 
