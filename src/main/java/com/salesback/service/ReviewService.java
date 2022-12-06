@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.discovery.DiscoveryClient;
 import com.salesback.model.Review;
 import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
@@ -20,6 +22,11 @@ public class ReviewService {
     
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private DiscoveryClient eurekaConsumer;
+
+
 
     public Review save(Review review){
 
@@ -35,8 +42,8 @@ public class ReviewService {
                 System.out.println("Recebido: " + product.getName() +" " +product.getPrice() +" " + product.getQuantity());
                 product.setReview(review.getReview());
                 product.setRating(review.getRating());
-                
-                String url_updateProduct = "http://localhost:8080/product/update";
+
+                String url_updateProduct = "http://PRODUCT/product/update"; //Change here!
                 
                 HttpEntity<ProductDTO> request = new HttpEntity<>(product);
 
