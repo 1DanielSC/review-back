@@ -5,16 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.salesback.model.Review;
 import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
+import com.salesback.service.interfaces.ProductServiceInterface;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -24,13 +22,17 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    private ProductServiceInterface repository;
+
+    @Autowired
+    public ReviewService(ProductServiceInterface psi){
+        this.repository = psi;
+    }
+
     @CircuitBreaker(name = "servicebeta")
     public Review save(Review review){
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url_getProduct = "http://localhost:8080/product/findByName/" + review.getProductName();
-
-        ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url_getProduct, ProductDTO.class);
+        ResponseEntity<ProductDTO> response = repository.findProductByName(review.getProductName());
 
         if(response.getStatusCode() == HttpStatus.OK){
             ProductDTO product = response.getBody();
@@ -38,12 +40,8 @@ public class ReviewService {
             if(product != null){
                 product.setReview(review.getReview());
                 product.setRating(review.getRating());
-
-                String url_updateProduct = "http://localhost:8080/product/update"; //TODO: Change here!
                 
-                HttpEntity<ProductDTO> request = new HttpEntity<>(product);
-
-                ResponseEntity<ProductDTO> requestUpdate = restTemplate.exchange(url_updateProduct, HttpMethod.PUT, request, ProductDTO.class); //Problem
+                ResponseEntity<ProductDTO> requestUpdate = repository.updateProduct(product);
 
                 if(requestUpdate.getStatusCode() == HttpStatus.OK){
                     return reviewRepository.save(review);
