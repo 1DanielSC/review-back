@@ -16,33 +16,35 @@ import com.salesback.model.Review;
 import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class ReviewService {
     
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @CircuitBreaker(name = "servicebeta")
     public Review save(Review review){
 
         RestTemplate restTemplate = new RestTemplate();
-        String url_getProduct = "http://localhost:8080/product/findByName/";
+        String url_getProduct = "http://localhost:8080/product/findByName/" + review.getProductName();
 
-        ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url_getProduct + review.getProductName(), ProductDTO.class);
+        ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url_getProduct, ProductDTO.class);
 
         if(response.getStatusCode() == HttpStatus.OK){
             ProductDTO product = response.getBody();
 
             if(product != null){
-                System.out.println("Recebido: " + product.getName() +" " +product.getPrice() +" " + product.getQuantity());
                 product.setReview(review.getReview());
                 product.setRating(review.getRating());
 
-                String url_updateProduct = "http://PRODUCT/product/update"; //Change here!
+                String url_updateProduct = "http://localhost:8080/product/update"; //TODO: Change here!
                 
                 HttpEntity<ProductDTO> request = new HttpEntity<>(product);
 
                 ResponseEntity<ProductDTO> requestUpdate = restTemplate.exchange(url_updateProduct, HttpMethod.PUT, request, ProductDTO.class); //Problem
-                
+
                 if(requestUpdate.getStatusCode() == HttpStatus.OK){
                     return reviewRepository.save(review);
                 }
