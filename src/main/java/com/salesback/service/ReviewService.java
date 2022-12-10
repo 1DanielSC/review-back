@@ -30,9 +30,19 @@ public class ReviewService {
     }
 
     @CircuitBreaker(name = "servicebeta")
+    public ResponseEntity<ProductDTO> getProductByName(String productName){
+        return repository.findProductByName(productName);
+    }
+
+    @CircuitBreaker(name = "servicebeta")
+    public ResponseEntity<ProductDTO> updateProduct(ProductDTO product){
+        return repository.updateProduct(product);
+    }
+
+    //@CircuitBreaker(name = "servicebeta")
     public Review save(Review review){
 
-        ResponseEntity<ProductDTO> response = repository.findProductByName(review.getProductName());
+        ResponseEntity<ProductDTO> response = getProductByName(review.getProductName());
 
         if(response.getStatusCode() == HttpStatus.OK){
             ProductDTO product = response.getBody();
@@ -41,7 +51,7 @@ public class ReviewService {
                 product.setReview(review.getReview());
                 product.setRating(review.getRating());
                 
-                ResponseEntity<ProductDTO> requestUpdate = repository.updateProduct(product);
+                ResponseEntity<ProductDTO> requestUpdate = updateProduct(product);
 
                 if(requestUpdate.getStatusCode() == HttpStatus.OK){
                     return reviewRepository.save(review);
