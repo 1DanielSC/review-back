@@ -14,7 +14,9 @@ import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
 import com.salesback.service.interfaces.ProductServiceInterface;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class ReviewService {
@@ -30,24 +32,38 @@ public class ReviewService {
     }
 
     @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
+    @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack")
+    @Bulkhead(name = "bulkheadservicebeta", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkheadFallBack")
     public ResponseEntity<ProductDTO> getProductByName(String productName){
         return repository.findProductByName(productName);
     }
 
     @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
+    @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack")
+    @Bulkhead(name = "bulkheadservicebeta", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkheadFallBack")
     public ResponseEntity<ProductDTO> updateProduct(ProductDTO product){
         return repository.updateProduct(product);
     }
 
-    public ResponseEntity<?> buildFallBack(ProductDTO product, Throwable t){
+    public ResponseEntity<String> buildFallBack(ProductDTO product, Throwable t){
         System.out.println("Falha no product " + product.getName());
         return ResponseEntity.ok("Fallback in action");
     }
 
-    //@CircuitBreaker(name = "servicebeta")
+    public ResponseEntity<String> bulkheadFallBack(Exception t){
+        System.out.println("BULKHEAD - Falha no product ");
+        return ResponseEntity.ok("failllllllllll");
+    } 
+
+    public ResponseEntity<String> retryProductService(Exception t){
+        System.out.println("SERVIÇO CAIU - Falha no product ");
+        return ResponseEntity.ok("failllllllllll");
+    }    
+
+
     public Review save(Review review){
 
-        ResponseEntity<ProductDTO> response = getProductByName(review.getProductName());
+        ResponseEntity<ProductDTO> response = this.getProductByName(review.getProductName());
 
         if(response.getStatusCode() == HttpStatus.OK){
             ProductDTO product = response.getBody();
