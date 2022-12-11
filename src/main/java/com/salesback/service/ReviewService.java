@@ -29,14 +29,19 @@ public class ReviewService {
         this.repository = psi;
     }
 
-    @CircuitBreaker(name = "servicebeta")
+    @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
     public ResponseEntity<ProductDTO> getProductByName(String productName){
         return repository.findProductByName(productName);
     }
 
-    @CircuitBreaker(name = "servicebeta")
+    @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
     public ResponseEntity<ProductDTO> updateProduct(ProductDTO product){
         return repository.updateProduct(product);
+    }
+
+    public ResponseEntity<?> buildFallBack(ProductDTO product, Throwable t){
+        System.out.println("Falha no product " + product.getName());
+        return ResponseEntity.ok("Fallback in action");
     }
 
     //@CircuitBreaker(name = "servicebeta")
