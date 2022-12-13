@@ -31,32 +31,42 @@ public class ReviewService {
         this.repository = psi;
     }
 
-    @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
-    @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack")
-    @Bulkhead(name = "bulkheadservicebeta", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkheadFallBack")
+    @CircuitBreaker(name = "getProductNameBreaker", fallbackMethod = "buildFallBack")
+    @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack") 
+    @Bulkhead(name = "getProductNameBulk", fallbackMethod = "getProductNameBulkheadFallBack") //type = Bulkhead.Type.SEMAPHORE
     public ResponseEntity<ProductDTO> getProductByName(String productName){
         return repository.findProductByName(productName);
     }
 
-    @CircuitBreaker(name = "servicebeta", fallbackMethod = "buildFallBack")
+    @CircuitBreaker(name = "updateProductBreaker", fallbackMethod = "buildFallBack2")
     @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack")
-    @Bulkhead(name = "bulkheadservicebeta", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkheadFallBack")
+    @Bulkhead(name = "updateProductBulk", fallbackMethod = "updateProductBulkheadFallBack")
     public ResponseEntity<ProductDTO> updateProduct(ProductDTO product){
         return repository.updateProduct(product);
     }
 
-    public ResponseEntity<String> buildFallBack(ProductDTO product, Throwable t){
-        System.out.println("Falha no product " + product.getName());
+    public ResponseEntity<String> buildFallBack(String productName, Throwable t){
+        System.err.println("FaALL BACK " + productName);
         return ResponseEntity.ok("Fallback in action");
     }
 
-    public ResponseEntity<String> bulkheadFallBack(Exception t){
-        System.out.println("BULKHEAD - Falha no product ");
+    public ResponseEntity<String> buildFallBack2(ProductDTO product, Throwable t){
+        System.err.println("FaALL BACK2 " + product.getName());
+        return ResponseEntity.ok("Fallback in action");
+    }
+
+    public ResponseEntity<String> getProductNameBulkheadFallBack(String productName, Throwable t){
+        System.err.println("BULKHEAD - Falha no GET product " + productName);
         return ResponseEntity.ok("failllllllllll");
     } 
 
-    public ResponseEntity<String> retryProductService(Exception t){
-        System.out.println("SERVIÇO CAIU - Falha no product ");
+    public ResponseEntity<String> updateProductBulkheadFallBack(ProductDTO product, Throwable t){
+        System.err.println("BULKHEAD - Falha no UPDATE product " + product.getName());
+        return ResponseEntity.ok("failllllllllll");
+    }
+
+    public ResponseEntity<String> retryProductService(Throwable t){
+        System.err.println("SERVIÇO CAIU - Falha no product ");
         return ResponseEntity.ok("failllllllllll");
     }    
 
