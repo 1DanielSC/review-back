@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.salesback.model.ProductReview;
 import com.salesback.model.Review;
 import com.salesback.model.dto.ProductDTO;
 import com.salesback.repository.ReviewRepository;
@@ -20,6 +21,9 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private ProductReviewService productReviewService;
+
     private ReviewResilience reviewResilience;
 
     @Autowired
@@ -27,6 +31,7 @@ public class ReviewService {
         this.reviewResilience = reviewResilience;
     }
 
+    /*
     public Review save(Review review){
         ResponseEntity<ProductDTO> response = reviewResilience.getProductByName(review.getProductName());
 
@@ -34,18 +39,45 @@ public class ReviewService {
             ProductDTO product = response.getBody();
 
             if(product != null){
-                product.setReview(review.getReview());
+                product.setReview(review.getReview().strip());
                 product.setRating(review.getRating());
                 
-                ResponseEntity<ProductDTO> requestUpdate = reviewResilience.updateProduct(product);
+                //ResponseEntity<ProductDTO> requestUpdate = reviewResilience.updateProduct(product);
 
-                if(requestUpdate.getStatusCode() == HttpStatus.OK){
-                    return reviewRepository.save(review);
-                }
+                //if(requestUpdate.getStatusCode() == HttpStatus.OK){
+                   return reviewRepository.save(review);
+                //}
             }
 
             System.out.println("Error on updating product.");
             return null;
+        }
+        else{
+            System.out.println("Product not Found!");
+            return null;
+        }
+    }
+     */
+
+    public ProductReview save(Review review){
+        ProductReview revieww = productReviewService.findByName(review.getProductName());
+
+        if(revieww!=null){
+            List<Review> reviews = revieww.getReviews();
+            reviews.add(review);
+            Double rating = reviews.stream().mapToDouble(Review::getRating).sum();
+            revieww.setRating(rating/(reviews.size()*1.0));
+            return productReviewService.save(revieww);
+        }
+
+        ResponseEntity<ProductDTO> response = reviewResilience.getProductByName(review.getProductName());
+
+        if(response.getStatusCode() == HttpStatus.OK){
+            revieww = new ProductReview();
+            revieww.addReview(review);
+            revieww.setProductName(review.getProductName());
+            revieww.setRating(review.getRating());
+            return productReviewService.save(revieww);
         }
         else{
             System.out.println("Product not Found!");
@@ -60,6 +92,11 @@ public class ReviewService {
 
     public List<Review> findAll(){
         return reviewRepository.findAll();
+    }
+
+    public Review findByName(String name){
+        Optional<Review> review = reviewRepository.findByProductName(name);
+        return review.isPresent() ? review.get() : null;
     }
 
 }

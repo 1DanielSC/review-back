@@ -1,12 +1,15 @@
 package com.salesback.model;
 
-import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "review")
@@ -14,16 +17,20 @@ public class Review {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    public String productName;
+    @NotBlank
+    private String productName;
     
-    public String review;
+    private String review;
 
-    public Double rating;
+    private Double rating;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="product_review_id")
+    private ProductReview productReview;
     
-    public Date date;
-
     public Long getId() {
         return id;
     }
@@ -56,13 +63,12 @@ public class Review {
         this.rating = rating;
     }
 
-    public Date getDate() {
-        return date;
+    public ProductReview getProductReview() {
+        return productReview;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setProductReview(ProductReview productReview) {
+        this.productReview = productReview;
     }
 
-    
 }

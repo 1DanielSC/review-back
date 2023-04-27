@@ -5,8 +5,6 @@ public class ProductDTO {
     public String name;
     public Double price;
     public Long quantity;
-    public String review;
-    public Double rating;
     
     public String getName() {
         return name;
@@ -26,24 +24,11 @@ public class ProductDTO {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
-    public String getReview() {
-        return review;
-    }
-    public void setReview(String review) {
-        this.review = review;
-    }
-    public Double getRating() {
-        return rating;
-    }
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
     public Long getId() {
         return id;
     }
     public void setId(Long id) {
         this.id = id;
     }
-
     
 }

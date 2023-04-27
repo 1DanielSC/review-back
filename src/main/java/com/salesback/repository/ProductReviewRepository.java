@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.salesback.model.Review;
+import com.salesback.model.ProductReview;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ProductReviewRepository extends JpaRepository<ProductReview, Long>  {
     
-    Optional<Review> findByProductName(String productName);
+    Optional<ProductReview> findByProductName(String productName);
 }

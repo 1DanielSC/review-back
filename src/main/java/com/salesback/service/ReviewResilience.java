@@ -1,6 +1,7 @@
 package com.salesback.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -28,32 +29,21 @@ public class ReviewResilience {
         return repository.findProductByName(productName);
     }
 
-    @CircuitBreaker(name = "updateProductBreaker", fallbackMethod = "buildFallBack2")
-    @Retry(name = "retryservicebeta", fallbackMethod = "retryFallBack")
-    @Bulkhead(name = "updateProductBulk", fallbackMethod = "updateProductBulkheadFallBack")
-    public ResponseEntity<ProductDTO> updateProduct(ProductDTO product){
-        return repository.updateProduct(product);
-    }
-
     public ResponseEntity<String> buildFallBack(String productName, Throwable t){
         System.err.println("FaALL BACK " + productName);
         return ResponseEntity.ok("Fallback in action");
     }
 
-    public ResponseEntity<String> buildFallBack2(ProductDTO product, Throwable t){
-        System.err.println("FaALL BACK2 " + product.getName());
-        return ResponseEntity.ok("Fallback in action");
-    }
-
     public ResponseEntity<String> getProductNameBulkheadFallBack(String productName, Throwable t){
-        System.err.println("BULKHEAD - Falha no GET product " + productName);
-        return ResponseEntity.ok("failllllllllll");
-    } 
+        System.err.println("BULKHEAD - Search by name failed for: " + productName);
 
-    public ResponseEntity<String> updateProductBulkheadFallBack(ProductDTO product, Throwable t){
-        System.err.println("BULKHEAD - Falha no UPDATE product " + product.getName());
-        return ResponseEntity.ok("failllllllllll");
-    }
+        if(t.getMessage().contains("404"))
+            return ResponseEntity.notFound().build();
+        else if(t.getMessage().contains("503"))
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+
+        return ResponseEntity.internalServerError().build();
+    } 
 
     public ResponseEntity<String> retryFallBack(Throwable t){
         System.err.println("SERVIÇO CAIU - Falha no product");
