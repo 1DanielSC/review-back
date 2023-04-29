@@ -1,4 +1,4 @@
-package com.salesback.exception;
+package com.review.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

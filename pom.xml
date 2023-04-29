@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>sales-back</artifactId>
+	<artifactId>review-back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sales-back</name>
-	<description>Sales backend</description>
+	<description>Review backend</description>
 	<properties>
 		<java.version>19</java.version>
 		<spring-cloud.version>2022.0.2</spring-cloud.version>
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
-			<version>3.0.6</version>
+			<!-- <version>3.0.6</version> -->
 		</dependency>
 		<!-- ZIPKING E SLEUTH
 		<dependency>

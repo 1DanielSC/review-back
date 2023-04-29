@@ -1,4 +1,4 @@
-package com.salesback.service;
+package com.review.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,14 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
 
-import com.salesback.exception.APIConnectionError;
-import com.salesback.exception.NotFoundException;
-import com.salesback.model.ProductReview;
-import com.salesback.model.Review;
-import com.salesback.model.dto.ProductDTO;
-import com.salesback.repository.ProductReviewRepository;
+import com.review.exception.APIConnectionError;
+import com.review.exception.NotFoundException;
+import com.review.model.ProductReview;
+import com.review.model.Review;
+import com.review.model.dto.ProductDTO;
+import com.review.repository.ProductReviewRepository;
+
+import org.springframework.http.HttpStatus;
 
 @Service
 public class ProductReviewService {

@@ -1,4 +1,4 @@
-package com.salesback.model.dto;
+package com.review.model.dto;
 
 public class ProductDTO {
     public Long id;

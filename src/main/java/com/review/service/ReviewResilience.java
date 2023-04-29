@@ -1,12 +1,12 @@
-package com.salesback.service;
+package com.review.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.salesback.model.dto.ProductDTO;
-import com.salesback.service.interfaces.ProductServiceInterface;
+import com.review.model.dto.ProductDTO;
+import com.review.service.interfaces.ProductServiceInterface;
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -36,6 +36,7 @@ public class ReviewResilience {
 
     public ResponseEntity<String> getProductNameBulkheadFallBack(String productName, Throwable t){
         System.err.println("BULKHEAD - Search by name failed for: " + productName);
+        System.out.println(t.getMessage());
 
         if(t.getMessage().contains("404"))
             return ResponseEntity.notFound().build();

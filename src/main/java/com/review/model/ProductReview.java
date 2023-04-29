@@ -1,4 +1,4 @@
-package com.salesback.model;
+package com.review.model;
 
 import java.util.ArrayList;
 import java.util.List;

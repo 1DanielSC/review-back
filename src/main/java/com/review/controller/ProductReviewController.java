@@ -1,4 +1,4 @@
-package com.salesback.controller;
+package com.review.controller;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesback.model.ProductReview;
-import com.salesback.model.Review;
-import com.salesback.service.ProductReviewService;
+import com.review.model.ProductReview;
+import com.review.model.Review;
+import com.review.service.ProductReviewService;
 
 @Controller
 @RequestMapping(value = "product-review")
