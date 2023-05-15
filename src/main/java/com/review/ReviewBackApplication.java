@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 //import brave.sampler.Sampler;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+// @EnableDiscoveryClient
 @EnableFeignClients
 public class ReviewBackApplication {
 
@@ -24,9 +24,9 @@ public class ReviewBackApplication {
 		return Sampler.ALWAYS_SAMPLE;
 	}
  */
-	@LoadBalanced
-	@Bean
-	public RestTemplate getRestTemplate(){
-		return new RestTemplate();
-	}
+	// @LoadBalanced
+	// @Bean
+	// public RestTemplate getRestTemplate(){
+	// 	return new RestTemplate();
+	// }
 }

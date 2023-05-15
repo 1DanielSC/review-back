@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.review.model.dto.ProductDTO;
-
-@FeignClient("PRODUCT")
+//"PRODUCT"
+@FeignClient(url = "http://localhost:8040", name = "PRODUCT")
 public interface ProductServiceInterface {
 
     @RequestMapping(method = RequestMethod.GET, value = "/product/name/{name}")
