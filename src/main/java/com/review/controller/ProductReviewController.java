@@ -22,6 +22,11 @@ public class ProductReviewController {
     @Autowired
     private ProductReviewService service;
 
+    @GetMapping("/thread")
+    public void thread(){
+        System.out.println(Thread.currentThread().toString());
+    } 
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductReview> findById(@PathVariable(value = "id") Long id){
         ProductReview review = service.findById(id);
