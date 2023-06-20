@@ -13,6 +13,7 @@ import com.review.model.ProductReview;
 import com.review.model.Review;
 import com.review.model.dto.ProductDTO;
 import com.review.repository.ProductReviewRepository;
+import com.review.service.interfaces.ProductServiceClient;
 
 import org.springframework.http.HttpStatus;
 
@@ -21,6 +22,9 @@ public class ProductReviewService {
 
     @Autowired
     public ProductReviewRepository repository;
+
+    @Autowired
+    private ProductServiceClient productClient;
 
     private ReviewResilience reviewResilience;
     
@@ -50,8 +54,9 @@ public class ProductReviewService {
             return repository.save(productReview);
         }
 
-        ResponseEntity<ProductDTO> response = reviewResilience.getProductByName(review.getProductName());
-
+        //ResponseEntity<ProductDTO> response = reviewResilience.getProductByName(review.getProductName());
+        ResponseEntity<ProductDTO> response = productClient.findProductByName(review.getProductName());
+        
         if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null){
             productReview = new ProductReview();
             productReview.addReview(review);
