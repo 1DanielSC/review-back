@@ -1,5 +1,7 @@
 package com.review.model;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -13,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "review")
-public class Review {
+public class Review implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

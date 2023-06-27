@@ -1,9 +1,10 @@
 package com.review.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,36 +34,33 @@ public class ProductReviewService {
         this.reviewResilience = reviewResilience;
     }
 
+    @Cacheable(value  = "reviews", key = "id")
     public ProductReview findById(Long id){
-        Optional<ProductReview> review = repository.findById(id);
-        return review.isPresent() ? review.get() : null;
+        return repository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Review not found with the ID provided."));
     }
 
+    @Cacheable(value  = "reviews")
     public List<ProductReview> findAll(){
         return repository.findAll();
     }
 
-    public ProductReview save(Review review){
-        ProductReview productReview = findByName(review.getProductName());
+    @CacheEvict(value = "reviews", allEntries = true)
+    public ProductReview save(ProductReview entity){
+        return repository.save(entity);
+    }
 
-        if(productReview!=null){
-            review.setId(null);
-            productReview.addReview(review);
-            
-            Double rating = productReview.getReviews().stream().mapToDouble(Review::getRating).sum();
-            productReview.setRating(rating/(productReview.getReviews().size()*1.0));
-            return repository.save(productReview);
-        }
-
+    private ProductReview requestProductByName(Review review){
         //ResponseEntity<ProductDTO> response = reviewResilience.getProductByName(review.getProductName());
         ResponseEntity<ProductDTO> response = productClient.findProductByName(review.getProductName());
         
+        ProductReview productReview = null;
         if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null){
             productReview = new ProductReview();
             productReview.addReview(review);
             productReview.setProductName(review.getProductName());
             productReview.setRating(review.getRating());
-            return repository.save(productReview);
+            return save(productReview);
         }
         else if(response.getStatusCode() == HttpStatus.NOT_FOUND)
             throw new NotFoundException("Product not Found!");
@@ -70,13 +68,32 @@ public class ProductReviewService {
             throw new APIConnectionError("Error on communication with product-backend.");
     }
 
+    public ProductReview save(Review review){
+        ProductReview productReview = null;
+        
+        try {
+            productReview = findByName(review.getProductName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        if(productReview!=null){
+            review.setId(null);
+            productReview.addReview(review);
+            
+            Double rating = productReview.getReviews().stream().mapToDouble(Review::getRating).sum();
+            productReview.setRating(rating/(productReview.getReviews().size()*1.0));
+            return save(productReview);
+        }
+
+        return requestProductByName(review);
+    }
+
+
+    @Cacheable(value  = "reviews", key = "name")
     public ProductReview findByName(String name){
-        Optional<ProductReview> review = repository.findByProductName(name);
-        return review.isPresent() ? review.get() : null;
+        return repository.findByProductName(name)
+            .orElseThrow(() -> new NotFoundException("Product with name \"" + name + "\" was not found."));
     }
 
-    public ProductReview save(ProductReview entity){
-        return repository.save(entity);
-    }
 }

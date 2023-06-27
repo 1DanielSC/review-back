@@ -1,5 +1,6 @@
 package com.review.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Table(name = "PRODUCT_REVIEW")
 @Entity
-public class ProductReview {
+public class ProductReview implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
