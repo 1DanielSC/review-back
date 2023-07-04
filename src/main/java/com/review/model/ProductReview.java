@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +17,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Table(name = "PRODUCT_REVIEW")
 @Entity
-public class ProductReview implements Serializable{
+public class ProductReview implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,7 @@ public class ProductReview implements Serializable{
     @Column(name = "name")
     private String productName;
 
-    @OneToMany(mappedBy="productReview", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="productReview", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
 
     public Double rating;

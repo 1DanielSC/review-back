@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.review.exception.APIConnectionError;
 import com.review.exception.NotFoundException;
@@ -34,8 +35,10 @@ public class ProductReviewService {
         this.reviewResilience = reviewResilience;
     }
 
-    @Cacheable(value  = "reviews", key = "id")
+    @Cacheable(value  = "reviews", key = "#id")
+    @Transactional(readOnly = true)
     public ProductReview findById(Long id){
+        System.out.println("Vou buscar o review por id no banco...");
         return repository.findById(id)
         .orElseThrow(() -> new NotFoundException("Review not found with the ID provided."));
     }
@@ -90,8 +93,10 @@ public class ProductReviewService {
     }
 
 
-    @Cacheable(value  = "reviews", key = "name")
+    @Cacheable(value  = "reviews", key = "#name")
+    @Transactional(readOnly = true)
     public ProductReview findByName(String name){
+        System.out.println("Entrei aqui no findByname");
         return repository.findByProductName(name)
             .orElseThrow(() -> new NotFoundException("Product with name \"" + name + "\" was not found."));
     }
