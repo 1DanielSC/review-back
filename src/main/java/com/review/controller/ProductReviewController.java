@@ -29,32 +29,17 @@ public class ProductReviewController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductReview> findById(@PathVariable(value = "id") Long id){
-        ProductReview review = service.findById(id);
-
-        if(review != null)
-            return ResponseEntity.ok(review);
-        else
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(service.findById(id));
     }
-
+ 
     @GetMapping
     public ResponseEntity<List<ProductReview>> findAll(){
-        List<ProductReview> reviews = service.findAll();
-
-        if(reviews != null)
-            return ResponseEntity.ok(reviews);
-        else
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
     public ResponseEntity<ProductReview> save(@RequestBody Review review){
-        ProductReview reviewSaved = service.save(review);
-
-        if(reviewSaved != null)
-            return ResponseEntity.ok(reviewSaved);
-        else
-            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(service.save(review));
     }
 
 }
