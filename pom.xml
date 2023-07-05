@@ -68,10 +68,12 @@
 			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
 			<version>4.0.0</version>
 		</dependency>
+
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
         </dependency>
+
 		<dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-circuitbreaker</artifactId>
@@ -82,11 +84,11 @@
 			<artifactId>resilience4j-spring-boot3</artifactId>
 			<version>${resilience4j.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-reactor</artifactId>
 			<version>${resilience4j.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-timelimiter</artifactId>
@@ -112,11 +114,14 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson-spring-boot-starter</artifactId>
 			<version>3.22.0</version>
-		</dependency>
+		</dependency> -->
+
+
+
 		<!-- ZIPKING E SLEUTH
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
