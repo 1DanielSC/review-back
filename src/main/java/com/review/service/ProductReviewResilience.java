@@ -18,10 +18,15 @@ public class ProductReviewResilience {
     @Autowired
     private ProductServiceClient productClient;
 
-    @CircuitBreaker(name = "productservice", fallbackMethod = "circuitBreakerFallBack")
-    @RateLimiter(name = "rate_productservice", fallbackMethod = "rateLimiterFallBack")
-    @Bulkhead(name = "bulk_productservice", fallbackMethod = "bulkheadFallBack")
-    @Retry(name = "retry_productservice", fallbackMethod = "retryFallBack")
+    /*
+     * Fallbacks comentados - https://stackoverflow.com/questions/71457925/resiliency4j-circuit-breaker-with-retry-configuration-not-working
+     * Para que cada anotação gere uma exceção.
+     */
+
+    @CircuitBreaker(name = "productservice")//, fallbackMethod = "circuitBreakerFallBack")
+    @RateLimiter(name = "rate_productservice")//, fallbackMethod = "rateLimiterFallBack")
+    @Bulkhead(name = "bulk_productservice")//, fallbackMethod = "bulkheadFallBack")
+    @Retry(name = "retry_productservice")//, fallbackMethod = "retryFallBack")
     public ResponseEntity<ProductDTO> requestProductByName(String name){
         return productClient.findProductByName(name);
     }
